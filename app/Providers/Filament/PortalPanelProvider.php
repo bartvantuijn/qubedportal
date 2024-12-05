@@ -2,8 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\CustomerResource\Widgets\CustomerOverview;
-use App\Filament\Resources\SubscriptionResource\Widgets\SubscriptionOverview;
+use App\Filament\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -11,7 +10,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -29,6 +27,10 @@ class PortalPanelProvider extends PanelProvider
             ->id('portal')
             ->path('')
             ->login()
+            //->registration()
+            ->passwordReset()
+            ->emailVerification()
+            ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -39,10 +41,7 @@ class PortalPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-                CustomerOverview::class,
-                SubscriptionOverview::class,
+                StatsOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -57,6 +56,7 @@ class PortalPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->spa();
     }
 }

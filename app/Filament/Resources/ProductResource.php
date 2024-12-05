@@ -19,6 +19,16 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getModelLabel(): string
+    {
+        return __('product');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('products');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

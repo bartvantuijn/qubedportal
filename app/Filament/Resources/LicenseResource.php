@@ -17,12 +17,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\HtmlString;
 
 class LicenseResource extends Resource
 {
     protected static ?string $model = License::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-key';
+
+    public static function getModelLabel(): string
+    {
+        return __('license');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('licenses');
+    }
 
     public static function form(Form $form): Form
     {
@@ -34,7 +45,16 @@ class LicenseResource extends Resource
                 TextInput::make('key')
                     ->label('Sleutel')
                     ->required()
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->hint(function ($component) {
+                        $hint = '
+                        <span wire:click="$set(\''.$component->getStatePath().'\', \'' . str()->random(20) . '\')" class="text-xs cursor-pointer">
+                            ' . __('Generate') . '
+                        </span>
+                        ';
+
+                        return new HtmlString($hint);
+                    }),
                 DateTimePicker::make('expires_at')
                     ->label('Vervalt op'),
             ]);
