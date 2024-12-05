@@ -10,7 +10,9 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,7 +51,7 @@ class LicenseResource extends Resource
                     ->hint(function ($component) {
                         $hint = '
                         <span wire:click="$set(\''.$component->getStatePath().'\', \'' . str()->random(20) . '\')" class="text-xs cursor-pointer">
-                            ' . __('Generate') . '
+                            ' . ucfirst(__('generate')) . '
                         </span>
                         ';
 
@@ -70,6 +72,19 @@ class LicenseResource extends Resource
                 TextColumn::make('key')
                     ->label('Sleutel')
                     ->sortable(),
+                IconColumn::make('active')
+                    ->label('Actief')
+                    ->getStateUsing(fn ($record) => $record->active())
+                    ->icon(fn (bool $state): string => match ($state) {
+                        true => 'heroicon-o-check-circle',
+                        false => 'heroicon-o-x-circle',
+                    })
+                    ->color(fn (bool $state): string => match ($state) {
+                        true => 'success',
+                        false => 'danger',
+                    })
+                    ->tooltip(fn ($record): string => $record->verified_at)
+                    ->alignment(Alignment::Center),
                 TextColumn::make('expires_at')
                     ->label('Vervalt op')
                     ->sortable(),

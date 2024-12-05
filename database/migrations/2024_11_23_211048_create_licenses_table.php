@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('domain');
             $table->string('key')->unique();
+            $table->datetime('verified_at')->nullable();
             $table->date('expires_at')->nullable();
             $table->timestamps();
         });

@@ -36,7 +36,7 @@ class LicenseApiController extends Controller
         }
 
         // Controleer of de licentie niet verlopen is
-        if ($license->expires_at !== null && Carbon::now()->greaterThan($license->expires_at)) {
+        if ($license->expires_at !== null && $license->expires_at->lt(Carbon::now())) {
             return response()->json([
                 'status' => 'invalid',
                 'message' => 'Licentie is verlopen.',
@@ -44,6 +44,7 @@ class LicenseApiController extends Controller
         }
 
         // Licentie is geldig
+        $license->update(['verified_at' => Carbon::now()]);
         return response()->json([
             'status' => 'valid',
             'message' => 'Licentie is geldig.',
