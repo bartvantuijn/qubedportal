@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateLicense extends CreateRecord
 {
     protected static string $resource = LicenseResource::class;
+
+    protected static bool $canCreateAnother = false;
 }

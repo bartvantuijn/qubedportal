@@ -2,34 +2,33 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
+use App\Filament\Resources\ClientResource\Pages;
+use App\Filament\Resources\ClientResource\RelationManagers;
+use App\Models\Client;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums;
-use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProductResource extends Resource
+class ClientResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = Client::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function getModelLabel(): string
     {
-        return __('Product');
+        return __('Clients');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Products');
+        return __('Clients');
     }
 
     public static function getGlobalSearchResultTitle(Model $record): string
@@ -39,7 +38,7 @@ class ProductResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'description'];
+        return ['name', 'email', 'phone'];
     }
 
     public static function form(Form $form): Form
@@ -47,15 +46,14 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label(__('Product'))
+                    ->label(__('Client'))
                     ->required(),
-                Forms\Components\TextInput::make('price')
-                    ->label(__('Price'))
-                    ->prefixIcon('heroicon-o-currency-euro')
-                    ->mask(RawJs::make('$money($input)')),
-                Forms\Components\RichEditor::make('description')
-                    ->label(__('Description'))
-                    ->columnSpan('full'),
+                Forms\Components\TextInput::make('email')
+                    ->label(__('Email'))
+                    ->email(),
+                Forms\Components\TextInput::make('phone')
+                    ->label(__('Phone'))
+                    ->tel(),
             ]);
     }
 
@@ -65,16 +63,16 @@ class ProductResource extends Resource
             ->columns([
                 //Tables\Columns\Layout\Split::make([
                     Tables\Columns\TextColumn::make('name')
-                        ->label(__('Product'))
+                        ->label(__('Client'))
                         ->weight(Enums\FontWeight::Black)
                         ->sortable()
                         ->searchable(),
-                    Tables\Columns\TextColumn::make('price')
-                        ->label(__('Price'))
+                    Tables\Columns\TextColumn::make('email')
+                        ->label(__('Email'))
                         ->sortable()
-                        ->money('EUR'),
-                    Tables\Columns\TextColumn::make('description')
-                        ->label(__('Description'))
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('phone')
+                        ->label(__('Phone'))
                         ->sortable()
                         ->searchable(),
                 //])->from('md')
@@ -90,7 +88,7 @@ class ProductResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->emptyStateHeading(__('No products'));
+            ->emptyStateHeading(__('No clients'));
     }
 
     public static function getRelations(): array
@@ -103,9 +101,9 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ListClients::route('/'),
+            'create' => Pages\CreateClient::route('/create'),
+            'edit' => Pages\EditClient::route('/{record}/edit'),
         ];
     }
 }
