@@ -65,6 +65,8 @@ class LicenseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->poll()
+            ->searchable()
             ->columns([
                 TextColumn::make('domain')
                     ->label('Domein')
@@ -83,7 +85,7 @@ class LicenseResource extends Resource
                         true => 'success',
                         false => 'danger',
                     })
-                    ->tooltip(fn ($record): string => $record->verified_at)
+                    ->tooltip(fn ($record): ?string => $record->verified_at)
                     ->alignment(Alignment::Center),
                 TextColumn::make('expires_at')
                     ->label('Vervalt op')
