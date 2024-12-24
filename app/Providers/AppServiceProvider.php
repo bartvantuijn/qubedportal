@@ -5,6 +5,9 @@ namespace App\Providers;
 use Carbon\Carbon;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\URL;
@@ -22,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
 
         $loader->alias('Carbon', Carbon::class);
         $loader->alias('FilamentAsset', FilamentAsset::class);
+
+        // Register custom colors
+        $this->app->singleton('colors.primary', function () {
+            return '#262626';
+        });
     }
 
     /**
@@ -41,5 +49,10 @@ class AppServiceProvider extends ServiceProvider
             Js::make('main', Vite::asset('resources/js/main.js')),
         ]);
 
+        // Register favicon render hook
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::HEAD_END,
+            fn (): View => view('filament.admin.favicon'),
+        );
     }
 }
