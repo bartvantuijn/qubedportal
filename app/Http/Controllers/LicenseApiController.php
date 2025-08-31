@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\License;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class LicenseApiController extends Controller
 {
@@ -20,7 +20,7 @@ class LicenseApiController extends Controller
         // Zoek de licentie in de database
         $license = License::where('key', $request->input('key'))->first();
 
-        if (!$license) {
+        if (! $license) {
             return response()->json([
                 'status' => 'invalid',
                 'message' => 'Licentie niet gevonden.',
@@ -45,6 +45,7 @@ class LicenseApiController extends Controller
 
         // Licentie is geldig
         $license->update(['verified_at' => Carbon::now()]);
+
         return response()->json([
             'status' => 'valid',
             'message' => 'Licentie is geldig.',

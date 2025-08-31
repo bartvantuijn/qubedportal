@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LicenseResource\Pages;
-use App\Filament\Resources\LicenseResource\RelationManagers;
 use App\Models\License;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,9 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LicenseResource extends Resource
 {
@@ -41,7 +38,6 @@ class LicenseResource extends Resource
     {
         return ['client.name', 'domain'];
     }
-
 
     public static function form(Form $form): Form
     {
@@ -116,33 +112,33 @@ class LicenseResource extends Resource
     {
         return [
             //Tables\Columns\Layout\Split::make([
-                Tables\Columns\TextColumn::make('client.name')
-                    ->label(__('Client'))
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('domain')
-                    ->label(__('Domain'))
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('key')
-                    ->label(__('Key'))
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('active')
-                    ->label(__('Active'))
-                    ->getStateUsing(fn (License $license): bool => $license->active())
-                    ->icon(fn (bool $state): string => match ($state) {
-                        true => 'heroicon-o-check-circle',
-                        false => 'heroicon-o-x-circle',
-                    })
-                    ->color(fn (bool $state): string => match ($state) {
-                        true => 'success',
-                        false => 'danger',
-                    })
-                    ->tooltip(fn (License $license): ?string => $license->verified_at)
-                    ->alignment(Enums\Alignment::Center),
-                Tables\Columns\TextColumn::make('expires_at')
-                    ->label(__('Expires at'))
-                    ->sortable(),
+            Tables\Columns\TextColumn::make('client.name')
+                ->label(__('Client'))
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('domain')
+                ->label(__('Domain'))
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('key')
+                ->label(__('Key'))
+                ->sortable(),
+            Tables\Columns\IconColumn::make('active')
+                ->label(__('Active'))
+                ->getStateUsing(fn (License $license): bool => $license->active())
+                ->icon(fn (bool $state): string => match ($state) {
+                    true => 'heroicon-o-check-circle',
+                    false => 'heroicon-o-x-circle',
+                })
+                ->color(fn (bool $state): string => match ($state) {
+                    true => 'success',
+                    false => 'danger',
+                })
+                ->tooltip(fn (License $license): ?string => $license->verified_at)
+                ->alignment(Enums\Alignment::Center),
+            Tables\Columns\TextColumn::make('expires_at')
+                ->label(__('Expires at'))
+                ->sortable(),
             //])->from('md')
         ];
     }

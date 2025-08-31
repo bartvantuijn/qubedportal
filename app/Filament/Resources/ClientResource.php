@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClientResource\Pages;
-use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,9 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ClientResource extends Resource
 {
@@ -62,19 +59,19 @@ class ClientResource extends Resource
         return $table
             ->columns([
                 //Tables\Columns\Layout\Split::make([
-                    Tables\Columns\TextColumn::make('name')
-                        ->label(__('Client'))
-                        ->weight(Enums\FontWeight::Black)
-                        ->sortable()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('email')
-                        ->label(__('Email'))
-                        ->sortable()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('phone')
-                        ->label(__('Phone'))
-                        ->sortable()
-                        ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Client'))
+                    ->weight(Enums\FontWeight::Black)
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label(__('Email'))
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label(__('Phone'))
+                    ->sortable()
+                    ->searchable(),
                 //])->from('md')
             ])
             ->filters([

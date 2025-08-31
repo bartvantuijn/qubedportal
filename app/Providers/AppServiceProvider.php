@@ -52,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
         // Register favicon render hook
         FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_END,
-            fn (): View => view('filament.admin.favicon'),
+            fn (): View => view('components.layouts.favicon'),
         );
     }
 }

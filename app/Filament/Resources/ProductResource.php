@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,9 +11,7 @@ use Filament\Support\Enums;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
@@ -64,19 +61,19 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 //Tables\Columns\Layout\Split::make([
-                    Tables\Columns\TextColumn::make('name')
-                        ->label(__('Product'))
-                        ->weight(Enums\FontWeight::Black)
-                        ->sortable()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('price')
-                        ->label(__('Price'))
-                        ->sortable()
-                        ->money('EUR'),
-                    Tables\Columns\TextColumn::make('description')
-                        ->label(__('Description'))
-                        ->sortable()
-                        ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Product'))
+                    ->weight(Enums\FontWeight::Black)
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->label(__('Price'))
+                    ->sortable()
+                    ->money('EUR'),
+                Tables\Columns\TextColumn::make('description')
+                    ->label(__('Description'))
+                    ->sortable()
+                    ->searchable(),
                 //])->from('md')
             ])
             ->filters([

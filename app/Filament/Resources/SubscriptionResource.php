@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionResource\Pages;
-use App\Filament\Resources\SubscriptionResource\RelationManagers;
 use App\Models\Product;
 use App\Models\Subscription;
 use Filament\Forms;
@@ -15,7 +14,6 @@ use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Query\Builder;
 
 class SubscriptionResource extends Resource
@@ -138,45 +136,44 @@ class SubscriptionResource extends Resource
     {
         return [
             //Tables\Columns\Layout\Split::make([
-                Tables\Columns\TextColumn::make('client.name')
-                    ->label(__('Client'))
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('product.name')
-                    ->label(__('Product'))
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->label(__('Price'))
-                    ->sortable()
-                    ->money('EUR')
-                    ->summarize(
-                        Tables\Columns\Summarizers\Summarizer::make()
-                            ->label(__('Yearly'))
-                            ->money('EUR')
-                            ->using(function (Builder $query): float {
-                                return $query->get()->sum(fn ($row) =>
-                                    match ($row->frequency) {
-                                        'daily' => $row->price * 365,
-                                        'monthly' => $row->price * 12,
-                                        'yearly' => $row->price,
-                                        default => $row->price * 0,
-                                    }
-                                );
-                            })
-                    ),
-                Tables\Columns\TextColumn::make('frequency')
-                    ->label(__('Frequency'))
-                    ->searchable()
-                    ->formatStateUsing(fn(string $state): string => __(ucfirst($state))),
-                Tables\Columns\TextColumn::make('start')
-                    ->label(__('Start date'))
-                    ->sortable()
-                    ->date(),
-                Tables\Columns\TextColumn::make('end')
-                    ->label(__('End date'))
-                    ->sortable()
-                    ->date(),
+            Tables\Columns\TextColumn::make('client.name')
+                ->label(__('Client'))
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('product.name')
+                ->label(__('Product'))
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('price')
+                ->label(__('Price'))
+                ->sortable()
+                ->money('EUR')
+                ->summarize(
+                    Tables\Columns\Summarizers\Summarizer::make()
+                        ->label(__('Yearly'))
+                        ->money('EUR')
+                        ->using(function (Builder $query): float {
+                            return $query->get()->sum(fn ($row) => match ($row->frequency) {
+                                'daily' => $row->price * 365,
+                                'monthly' => $row->price * 12,
+                                'yearly' => $row->price,
+                                default => $row->price * 0,
+                            }
+                            );
+                        })
+                ),
+            Tables\Columns\TextColumn::make('frequency')
+                ->label(__('Frequency'))
+                ->searchable()
+                ->formatStateUsing(fn (string $state): string => __(ucfirst($state))),
+            Tables\Columns\TextColumn::make('start')
+                ->label(__('Start date'))
+                ->sortable()
+                ->date(),
+            Tables\Columns\TextColumn::make('end')
+                ->label(__('End date'))
+                ->sortable()
+                ->date(),
             //])->from('md')
         ];
     }
