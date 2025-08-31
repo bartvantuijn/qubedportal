@@ -42,6 +42,12 @@ Create an initial admin user:
 php artisan make:filament-user
 ```
 
+Start the app:
+
+```bash
+php artisan serve
+```
+
 ---
 
 ## API
