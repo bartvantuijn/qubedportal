@@ -6,7 +6,7 @@ An internal portal built with [Laravel][laravel] and [Filament][filament] for ma
 
 ---
 
-> Please note that Qubed Portal is an internal project of Qubed Group
+> Please note that **Qubed Portal** is an internal project of Qubed Group
 
 ## Installation
 
