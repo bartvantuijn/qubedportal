@@ -21,7 +21,8 @@
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1"
+        "phpunit/phpunit": "^11.0.1",
+        "rector/rector": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -36,6 +37,12 @@
         }
     },
     "scripts": {
+        "cs": [
+            "rector",
+            "pint"
+        ],
+        "pint": "pint --config pint.json",
+        "rector": "rector",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
