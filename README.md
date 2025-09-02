@@ -52,7 +52,7 @@ If you want seeded demo data, run:
 php artisan migrate:fresh --seed
 ```
 
-The seeder will create demo computers, openings and a test user:
+The seeder will create a test user:
 
 - **Email**: test@example.com
 - **Password**: password
