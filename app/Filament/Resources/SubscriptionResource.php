@@ -153,12 +153,13 @@ class SubscriptionResource extends Resource
                         ->label(__('Yearly'))
                         ->money('EUR')
                         ->using(function (Builder $query): float {
-                            return $query->get()->sum(fn ($row) => match ($row->frequency) {
-                                'daily' => $row->price * 365,
-                                'monthly' => $row->price * 12,
-                                'yearly' => $row->price,
-                                default => $row->price * 0,
-                            }
+                            return $query->get()->sum(
+                                fn ($row) => match ($row->frequency) {
+                                    'daily' => $row->price * 365,
+                                    'monthly' => $row->price * 12,
+                                    'yearly' => $row->price,
+                                    default => $row->price * 0,
+                                }
                             );
                         })
                 ),

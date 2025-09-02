@@ -99,7 +99,7 @@ class LicenseResource extends Resource
                 ->suffixAction(
                     Forms\Components\Actions\Action::make('generate')
                         ->icon('heroicon-o-arrow-path')
-                        ->action(function (Set $set) {
+                        ->action(function (Set $set): void {
                             $set('key', str()->random(20));
                         }),
                 ),
