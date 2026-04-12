@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Expense;
 use App\Models\License;
 use App\Models\Subscription;
 use Carbon\Carbon;
@@ -39,6 +40,28 @@ class StatsOverview extends BaseWidget
             };
         });
 
+        $expenses = Expense::query()->get(['amount', 'frequency']);
+        $yearlyExpenses = $expenses->sum(function ($row) {
+            return match ($row->frequency) {
+                'daily' => $row->amount * 365,
+                'monthly' => $row->amount * 12,
+                'yearly' => $row->amount,
+                default => $row->amount * 0,
+            };
+        });
+
+        $monthlyExpenses = $expenses->sum(function ($row) {
+            return match ($row->frequency) {
+                'daily' => $row->amount * 365 / 12,
+                'monthly' => $row->amount * 12 / 12,
+                'yearly' => $row->amount / 12,
+                default => $row->amount * 0,
+            };
+        });
+
+        $yearlyProfit = $yearlyRevenue - $yearlyExpenses;
+        $monthlyProfit = $monthlyRevenue - $monthlyExpenses;
+
         return [
             Stat::make(__('Subscriptions'), $subscriptionCount)
                 ->description(__(':count this month', ['count' => $monthlySubscriptions]))
@@ -48,10 +71,18 @@ class StatsOverview extends BaseWidget
                 ->description(__(':count this month', ['count' => $monthlyLicenses]))
                 ->descriptionIcon($monthlyLicenses > 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
                 ->color($monthlyLicenses > 0 ? 'success' : 'gray'),
-            Stat::make(__('Yearly'), $this->money($yearlyRevenue))
+            Stat::make(__('Revenue'), $this->money($yearlyRevenue))
                 ->description(__(':count this month', ['count' => $this->money($monthlyRevenue)]))
                 ->descriptionIcon($monthlyRevenue > 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
                 ->color($monthlyRevenue > 0 ? 'success' : 'gray'),
+            Stat::make(__('Expenses'), $this->money($yearlyExpenses))
+                ->description(__(':count this month', ['count' => $this->money($monthlyExpenses)]))
+                ->descriptionIcon('heroicon-o-arrow-trending-down')
+                ->color($yearlyExpenses > 0 ? 'danger' : 'gray'),
+            Stat::make(__('Profit'), $this->money($yearlyProfit))
+                ->description(__(':count this month', ['count' => $this->money($monthlyProfit)]))
+                ->descriptionIcon($yearlyProfit >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->color($yearlyProfit >= 0 ? 'success' : 'danger'),
         ];
     }
 
