@@ -8,15 +8,17 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
 class ExpenseResource extends Resource
 {
     protected static ?string $model = Expense::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-down';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     public static function getModelLabel(): string
     {
@@ -26,6 +28,11 @@ class ExpenseResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('Expenses');
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record->name;
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -79,12 +86,11 @@ class ExpenseResource extends Resource
             Forms\Components\TextInput::make('name')
                 ->label(__('Name'))
                 ->required(),
-            Forms\Components\TextInput::make('amount')
-                ->label(__('Amount'))
+            Forms\Components\TextInput::make('price')
+                ->label(__('Price'))
                 ->required()
                 ->prefixIcon('heroicon-o-currency-euro')
-                ->numeric()
-                ->minValue(0),
+                ->mask(RawJs::make('$money($input)')),
             Forms\Components\Select::make('frequency')
                 ->label(__('Frequency'))
                 ->required()
@@ -120,8 +126,8 @@ class ExpenseResource extends Resource
                 ->label(__('Name'))
                 ->sortable()
                 ->searchable(),
-            Tables\Columns\TextColumn::make('amount')
-                ->label(__('Amount'))
+            Tables\Columns\TextColumn::make('price')
+                ->label(__('Price'))
                 ->sortable()
                 ->money('EUR')
                 ->summarize(
@@ -131,10 +137,10 @@ class ExpenseResource extends Resource
                         ->using(function (Builder $query): float {
                             return $query->get()->sum(
                                 fn ($row) => match ($row->frequency) {
-                                    'daily' => $row->amount * 365,
-                                    'monthly' => $row->amount * 12,
-                                    'yearly' => $row->amount,
-                                    default => $row->amount * 0,
+                                    'daily' => $row->price * 365,
+                                    'monthly' => $row->price * 12,
+                                    'yearly' => $row->price,
+                                    default => $row->price * 0,
                                 }
                             );
                         })

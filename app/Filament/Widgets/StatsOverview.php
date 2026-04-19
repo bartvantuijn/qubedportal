@@ -22,42 +22,12 @@ class StatsOverview extends BaseWidget
         $monthlyLicenses = License::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count();
 
         $subscriptions = Subscription::query()->get(['price', 'frequency']);
-        $yearlyRevenue = $subscriptions->sum(function ($row) {
-            return match ($row->frequency) {
-                'daily' => $row->price * 365,
-                'monthly' => $row->price * 12,
-                'yearly' => $row->price,
-                default => $row->price * 0,
-            };
-        });
+        $yearlyRevenue = $subscriptions->sum(fn ($row) => $this->yearly($row));
+        $monthlyRevenue = $yearlyRevenue / 12;
 
-        $monthlyRevenue = $subscriptions->sum(function ($row) {
-            return match ($row->frequency) {
-                'daily' => $row->price * 365 / 12,
-                'monthly' => $row->price * 12 / 12,
-                'yearly' => $row->price / 12,
-                default => $row->price * 0,
-            };
-        });
-
-        $expenses = Expense::query()->get(['amount', 'frequency']);
-        $yearlyExpenses = $expenses->sum(function ($row) {
-            return match ($row->frequency) {
-                'daily' => $row->amount * 365,
-                'monthly' => $row->amount * 12,
-                'yearly' => $row->amount,
-                default => $row->amount * 0,
-            };
-        });
-
-        $monthlyExpenses = $expenses->sum(function ($row) {
-            return match ($row->frequency) {
-                'daily' => $row->amount * 365 / 12,
-                'monthly' => $row->amount * 12 / 12,
-                'yearly' => $row->amount / 12,
-                default => $row->amount * 0,
-            };
-        });
+        $expenses = Expense::query()->get(['price', 'frequency']);
+        $yearlyExpenses = $expenses->sum(fn ($row) => $this->yearly($row));
+        $monthlyExpenses = $yearlyExpenses / 12;
 
         $yearlyProfit = $yearlyRevenue - $yearlyExpenses;
         $monthlyProfit = $monthlyRevenue - $monthlyExpenses;
@@ -84,6 +54,16 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon($yearlyProfit >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
                 ->color($yearlyProfit >= 0 ? 'success' : 'danger'),
         ];
+    }
+
+    protected function yearly(object $row): float
+    {
+        return (float) match ($row->frequency) {
+            'daily' => $row->price * 365,
+            'monthly' => $row->price * 12,
+            'yearly' => $row->price,
+            default => $row->price * 0,
+        };
     }
 
     protected function money(float $amount): string

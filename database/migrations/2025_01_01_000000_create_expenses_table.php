@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('amount');
-            $table->enum('frequency', ['daily', 'monthly', 'yearly', 'none'])->default('monthly');
+            $table->decimal('price');
+            $table->enum('frequency', ['daily', 'monthly', 'yearly', 'none'])->default('none');
             $table->date('start')->nullable();
             $table->date('end')->nullable();
             $table->text('description')->nullable();
