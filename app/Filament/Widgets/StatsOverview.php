@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Expense;
+use App\Models\Invoice;
 use App\Models\License;
 use App\Models\Subscription;
 use Carbon\Carbon;
@@ -53,6 +54,10 @@ class StatsOverview extends BaseWidget
                 ->description(__(':count this month', ['count' => $this->money($monthlyProfit)]))
                 ->descriptionIcon($yearlyProfit >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
                 ->color($yearlyProfit >= 0 ? 'success' : 'danger'),
+            Stat::make(__('Outstanding invoices'), Invoice::whereIn('status', ['sent', 'overdue'])->count())
+                ->description($this->money((float) Invoice::whereIn('status', ['sent', 'overdue'])->sum('total')))
+                ->descriptionIcon('heroicon-o-document-text')
+                ->color(Invoice::where('status', 'overdue')->exists() ? 'danger' : 'warning'),
         ];
     }
 
