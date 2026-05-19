@@ -26,12 +26,17 @@ class InvoiceNumberTest extends TestCase
 
     public function test_invoice_pdf_filename_uses_client_language(): void
     {
-        $invoice = new Invoice(['invoice_number' => 'F001.058']);
+        $invoice = new Invoice;
+        $invoice->invoice_number = 'F001.058';
 
-        $invoice->setRelation('client', new Client(['invoice_language' => 'nl']));
+        $client = new Client;
+
+        $client->invoice_language = 'nl';
+        $invoice->setRelation('client', $client);
         $this->assertSame('Factuur(F001.058).pdf', $invoice->pdfFilename());
 
-        $invoice->setRelation('client', new Client(['invoice_language' => 'en']));
+        $client->invoice_language = 'en';
+        $invoice->setRelation('client', $client);
         $this->assertSame('Invoice(F001.058).pdf', $invoice->pdfFilename());
     }
 }
