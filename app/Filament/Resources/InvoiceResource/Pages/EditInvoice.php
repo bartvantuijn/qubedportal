@@ -75,6 +75,8 @@ class EditInvoice extends EditRecord
             'sent_at' => now(),
         ]);
 
+        $this->refreshFormData(['status', 'sent_at']);
+
         Notification::make()
             ->title(__('Invoice sent to :email', ['email' => $recipient]))
             ->success()
