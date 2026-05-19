@@ -20,7 +20,7 @@ class ClientResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Clients');
+        return __('Client');
     }
 
     public static function getPluralModelLabel(): string
@@ -41,6 +41,7 @@ class ClientResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(2)
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->label(__('Client'))
@@ -51,6 +52,22 @@ class ClientResource extends Resource
                 Forms\Components\TextInput::make('phone')
                     ->label(__('Phone'))
                     ->tel(),
+                Forms\Components\Select::make('invoice_language')
+                    ->label(__('Invoice language'))
+                    ->options([
+                        'nl' => __('Dutch'),
+                        'en' => __('English'),
+                    ])
+                    ->native(false)
+                    ->default('nl')
+                    ->required(),
+                Forms\Components\TextInput::make('billing_street')
+                    ->label(__('Street'))
+                    ->columnSpan('full'),
+                Forms\Components\TextInput::make('billing_postcode')
+                    ->label(__('Postcode')),
+                Forms\Components\TextInput::make('billing_city')
+                    ->label(__('City')),
             ]);
     }
 
@@ -58,7 +75,6 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
-                //Tables\Columns\Layout\Split::make([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Client'))
                     ->weight(Enums\FontWeight::Black)
@@ -72,7 +88,9 @@ class ClientResource extends Resource
                     ->label(__('Phone'))
                     ->sortable()
                     ->searchable(),
-                //])->from('md')
+                Tables\Columns\TextColumn::make('invoice_language')
+                    ->label(__('Invoice language'))
+                    ->formatStateUsing(fn (string $state): string => __(strtoupper($state))),
             ])
             ->filters([
                 //
