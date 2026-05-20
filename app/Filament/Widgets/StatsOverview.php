@@ -33,6 +33,11 @@ class StatsOverview extends BaseWidget
         $yearlyProfit = $yearlyRevenue - $yearlyExpenses;
         $monthlyProfit = $monthlyRevenue - $monthlyExpenses;
 
+        $outstandingInvoices = Invoice::whereIn('status', ['sent', 'overdue']);
+        $outstandingInvoiceCount = (clone $outstandingInvoices)->count();
+        $outstandingInvoiceTotal = (float) (clone $outstandingInvoices)->sum('total');
+        $hasOverdueInvoices = Invoice::where('status', 'overdue')->exists();
+
         return [
             Stat::make(__('Subscriptions'), $subscriptionCount)
                 ->description(__(':count this month', ['count' => $monthlySubscriptions]))
@@ -54,10 +59,10 @@ class StatsOverview extends BaseWidget
                 ->description(__(':count this month', ['count' => $this->money($monthlyProfit)]))
                 ->descriptionIcon($yearlyProfit >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
                 ->color($yearlyProfit >= 0 ? 'success' : 'danger'),
-            Stat::make(__('Outstanding invoices'), Invoice::whereIn('status', ['sent', 'overdue'])->count())
-                ->description($this->money((float) Invoice::whereIn('status', ['sent', 'overdue'])->sum('total')))
+            Stat::make(__('Outstanding invoices'), $outstandingInvoiceCount)
+                ->description($this->money($outstandingInvoiceTotal))
                 ->descriptionIcon('heroicon-o-document-text')
-                ->color(Invoice::where('status', 'overdue')->exists() ? 'danger' : 'warning'),
+                ->color($hasOverdueInvoices ? 'danger' : ($outstandingInvoiceTotal > 0 ? 'warning' : 'gray')),
         ];
     }
 
